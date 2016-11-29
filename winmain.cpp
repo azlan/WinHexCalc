@@ -76,11 +76,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				*(strBuffer) = result;
 				sprintf_s(outputString,
 					"Result:"
+					"\r\n"
 					"\r\n Signed  : %I64d"
+					"\r\n"
 					"\r\n Unsigned: %I64u"
+					"\r\n"
 					"\r\n Hex     : 0x%016llX"
+					"\r\n"
 					"\r\n Binary  : %s"
 					"\r\n           %s"
+					"\r\n"
 					"\r\n String  : %s", result, result, result, binaryOutput, binaryOutput2, (char *)strBuffer);
 				SetWindowText(hOutput, outputString);
 			}
