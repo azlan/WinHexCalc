@@ -1,8 +1,10 @@
 CC=g++
+LIBS=-lgdi32 -lcomctl32
 
 ifeq ($(DEBUG),yes)
 	CXXFLAGS=-Wall -W -g
 	LDFLAGS=-Wall -W -g
+	
 else
 	CXXFLAGS=-Wall -W
 	LDFLAGS=-Wall -W
@@ -14,28 +16,31 @@ OBJPATH=obj
 LIBPATH=lib
 BINPATH=.
 
-SRC=$(SRCPATH)/main.cpp \
+SRC=$(SRCPATH)/winmain.cpp \
     $(SRCPATH)/hexcalc.cpp \
-    $(SRCPATH)/test.cpp 
-OBJ=$(OBJPATH)/main.o \
+    $(SRCPATH)/test.cpp
+OBJ=$(OBJPATH)/winmain.o \
     $(OBJPATH)/hexcalc.o \
-    $(OBJPATH)/test.o 
+    $(OBJPATH)/test.o
 EXEC=$(BINPATH)/hexcalc
 
 INCLUDES=-I ./$(INCPATH)
 
-default: $(EXEC)
+default: OBJPATH $(EXEC)
+	
+OBJPATH:
+	@mkdir -p $(OBJPATH)
 
 $(EXEC): $(OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^ 
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-$(OBJPATH)/%.o: $(SRCPATH)/%.cpp $(INCPATH)/hexcalc.h
-	$(CC) $(CXXFLAGS) $(INCLUDES) -c $< -o $@ 
+$(OBJPATH)/%.o: $(SRCPATH)/%.cpp $(INCPATH)/hexcalc.h $(INCPATH)/helper.h
+	$(CC) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 .PHONY: clean cleanall
 
 clean:
-	rm -f $(OBJPATH)/*.o
+	rm -rf $(OBJPATH)
 
 cleanall: clean
-	rm -f $(EXEC)
+	rm -rf $(EXEC)
