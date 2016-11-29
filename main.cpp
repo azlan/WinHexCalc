@@ -18,15 +18,16 @@ int main()
 	{
 		// Get a string from console
 		static char buff[256];
-		char *expr = gets(buff);
+		fgets(buff, sizeof(buff), stdin);
+		buff[strcspn(buff, "\r\n")] = 0; // remove trailing newline
 
 		// If the string is empty, then exit
-		if(*expr == '\0')
+		if(*buff == '\0')
 			return 0;
 
 		// Evaluate the expression
 		Evaluate eval;
-		double res = eval.Eval(expr);
+		double res = eval.Eval(buff);
 		if(eval.GetErr() != EEE_NO_ERROR) {
 			printf("  Error: %s at %s\n", errors[eval.GetErr()], eval.GetErrPos());
 		} else {
