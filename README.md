@@ -1,3 +1,4 @@
-# hexcalc for reverse
+# WinHexCalc
 
-easy to use calculator
+Easy to use calculator
+

@@ -141,7 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 	hwnd = CreateWindowEx(
 		WS_EX_CLIENTEDGE,
 		g_szClassName,
-		"Reverser calc (32bit)- v0.1.1 - azlan.mukhtar@gmail.com",
+		"WinHexCalc v0.1 - https://www.github.com/azlan/WinHexCalc",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, 640, 480,
 		NULL, NULL, hInstance, NULL);
