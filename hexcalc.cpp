@@ -211,12 +211,23 @@ int64_t Evaluate::ParseNumber(char* &expr)
 	res = strtoull(expr, &end_ptr, 10);
 	if (end_ptr == expr)
 	{
+		if (std::regex_search(expr, results, std::regex("^([a-zA-Z]+)")))
+		{
+			res = *(int64_t*)results.str().c_str();
+			expr += results.str().length();
+			return res;
+		}
+
 		// Report error
 		_err = EEE_WRONG_CHAR;
 		_err_pos = expr;
 		return 0;
 	}
-	// Advance the pointer and return the result
-	expr = end_ptr;
+	else
+	{
+		// Advance the pointer and return the result
+		expr = end_ptr;
+	}
+
 	return res;
 }
