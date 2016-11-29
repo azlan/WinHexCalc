@@ -26,6 +26,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	char buffer[256];
 	char outputString[256];
 	char binaryOutput[256];
+	char binaryOutput2[256];
 	Evaluate eval;
 
 	switch(msg)
@@ -68,16 +69,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			if (lParam == (LPARAM)hInput &&  HIWORD(wParam) == EN_CHANGE) 
 			{
 				GetWindowText(hInput,buffer,sizeof(buffer));
-				int result = eval.Eval(buffer);
-				printToBinary(result, binaryOutput);
-				int strBuffer[2] = {};
+				int64_t result = eval.Eval(buffer);
+				printToBinary((result >> 32), binaryOutput);
+				printToBinary((result & 0xffffffff), binaryOutput2);
+				int64_t strBuffer[2] = {};
 				*(strBuffer) = result;
-				sprintf_s(outputString,256, "Result: \
-									\r\n Signed  : %d \
-									\r\n Unsigned: %u \
-									\r\n Hex     : 0x%08X \
-									\r\n Binary  : %s \
-									\r\n String  : %s", result, result,result, binaryOutput, (char *)strBuffer);
+				sprintf_s(outputString,
+					"Result:"
+					"\r\n Signed  : %I64d"
+					"\r\n Unsigned: %I64u"
+					"\r\n Hex     : 0x%016llX"
+					"\r\n Binary  : %s"
+					"\r\n           %s"
+					"\r\n String  : %s", result, result, result, binaryOutput, binaryOutput2, (char *)strBuffer);
 				SetWindowText(hOutput, outputString);
 			}
 		}

@@ -21,15 +21,15 @@ private:
 	EXPR_EVAL_ERR _err;
 	char* _err_pos;
 	int _paren_count;
-	int ParseBitwise(char*& expr);
-	int ParseSum(char*& expr);
-	int ParseFactors(char*& expr);
-	int ParseAtom(char* &expr);
-	int ParseNumber(char* &expr);
+	int64_t ParseBitwise(char*& expr);
+	int64_t ParseSum(char*& expr);
+	int64_t ParseFactors(char*& expr);
+	int64_t ParseAtom(char* &expr);
+	int64_t ParseNumber(char* &expr);
 
 public:
 
-	int Eval(char* expr);
+	int64_t Eval(char* expr);
 
 	EXPR_EVAL_ERR GetErr() {
 		return _err;

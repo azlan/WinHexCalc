@@ -28,12 +28,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "hexcalc.h"
 
-int Evaluate::Eval(char* expr)
+int64_t Evaluate::Eval(char* expr)
 {
 	_paren_count = 0;
 	_err = EEE_NO_ERROR;
 
-	int res = ParseBitwise(expr);
+	int64_t res = ParseBitwise(expr);
 	// Now, expr should point to '\0', and _paren_count should be zero
 	if (_paren_count != 0 || *expr == ')') {
 		_err = EEE_PARENTHESIS;
@@ -49,9 +49,9 @@ int Evaluate::Eval(char* expr)
 }
 
 // Parse Bitwise
-int Evaluate::ParseBitwise(char* &expr)
+int64_t Evaluate::ParseBitwise(char* &expr)
 {
-	int num1 = ParseSum(expr);
+	int64_t num1 = ParseSum(expr);
 
 	for (;;) {
 		// Skip spaces
@@ -61,7 +61,7 @@ int Evaluate::ParseBitwise(char* &expr)
 		if (op != '^' && op != '&' && op != '|')
 			return num1;
 		expr++;
-		int num2 = ParseSum(expr);
+		int64_t num2 = ParseSum(expr);
 
 		if (op == '^')
 			num1 ^= num2;
@@ -73,9 +73,9 @@ int Evaluate::ParseBitwise(char* &expr)
 }
 
 // Parse add & minus
-int Evaluate::ParseSum(char* &expr)
+int64_t Evaluate::ParseSum(char* &expr)
 {
-	int num1 = ParseFactors(expr);
+	int64_t num1 = ParseFactors(expr);
 
 	for (;;) {
 		// Skip spaces
@@ -85,7 +85,7 @@ int Evaluate::ParseSum(char* &expr)
 		if (op != '-' && op != '+')
 			return num1;
 		expr++;
-		int num2 = ParseFactors(expr);
+		int64_t num2 = ParseFactors(expr);
 
 		if (op == '-')
 			num1 -= num2;
@@ -95,8 +95,8 @@ int Evaluate::ParseSum(char* &expr)
 }
 
 // Parse multiplication and division
-int Evaluate::ParseFactors(char* &expr) {
-	int num1 = ParseAtom(expr);
+int64_t Evaluate::ParseFactors(char* &expr) {
+	int64_t num1 = ParseAtom(expr);
 	for (;;) {
 		// Skip spaces
 		while (*expr == ' ')
@@ -107,7 +107,7 @@ int Evaluate::ParseFactors(char* &expr) {
 		if (op != '/' && op != '*')
 			return num1;
 		expr++;
-		int num2 = ParseAtom(expr);
+		int64_t num2 = ParseAtom(expr);
 		// Perform the saved operation
 		if (op == '/') {
 			// Handle division by zero
@@ -124,7 +124,7 @@ int Evaluate::ParseFactors(char* &expr) {
 }
 
 // Parse a number or an expression in parenthesis
-int Evaluate::ParseAtom(char* &expr) {
+int64_t Evaluate::ParseAtom(char* &expr) {
 	// Skip spaces
 	while (*expr == ' ')
 		expr++;
@@ -143,7 +143,7 @@ int Evaluate::ParseAtom(char* &expr) {
 	if (*expr == '(') {
 		expr++;
 		_paren_count++;
-		int res = ParseBitwise(expr);
+		int64_t res = ParseBitwise(expr);
 		if (*expr != ')') {
 			// Unmatched opening parenthesis
 			_err = EEE_PARENTHESIS;
@@ -156,22 +156,22 @@ int Evaluate::ParseAtom(char* &expr) {
 	}
 
 	// It should be a number; convert it to int
-	int res = ParseNumber(expr);
+	int64_t res = ParseNumber(expr);
 
 	// Return the result
 	return negative ? -res : res;
 }
 
-int Evaluate::ParseNumber(char* &expr)
+int64_t Evaluate::ParseNumber(char* &expr)
 {
 	char* end_ptr;
-	int res = 0;
+	int64_t res = 0;
 
 	std::cmatch results;
 
 	if (std::regex_search(expr, results, std::regex("^(0[xX][0-9a-fA-F]+)|^([0-9a-fA-F]+h)")))
 	{
-		res = strtoul(expr, &end_ptr, 16);
+		res = strtoull(expr, &end_ptr, 16);
 		// Advance the pointer and return the result
 		expr += results.length();
 		return res;
@@ -182,7 +182,7 @@ int Evaluate::ParseNumber(char* &expr)
 	{
 		// skip 2 characters (0b)
 		expr += 2;
-		res = strtoul(expr, &end_ptr, 2);
+		res = strtoull(expr, &end_ptr, 2);
 		// Advance the pointer and return the result
 		expr += results.length()-2;
 		return res;
@@ -191,7 +191,7 @@ int Evaluate::ParseNumber(char* &expr)
 	// binary number - 1010b 
 	if (std::regex_search(expr, results, std::regex("^([0-1]+b)")))
 	{
-		res = strtoul(expr, &end_ptr, 2);
+		res = strtoull(expr, &end_ptr, 2);
 		// Advance the pointer and return the result
 		expr += results.length();
 		return res;
@@ -201,14 +201,14 @@ int Evaluate::ParseNumber(char* &expr)
 	if (std::regex_search(expr, results, std::regex("^(0[0-7]+)")))
 	{
 		std::cout << results.str();
-		res = strtoul(expr, &end_ptr, 8);
+		res = strtoull(expr, &end_ptr, 8);
 		// Advance the pointer and return the result
 		expr += results.length();
 		return res;
 	}
 
 	// Decimal number
-	res = strtoul(expr, &end_ptr, 10);
+	res = strtoull(expr, &end_ptr, 10);
 	if (end_ptr == expr)
 	{
 		// Report error
