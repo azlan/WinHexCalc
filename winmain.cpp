@@ -10,6 +10,7 @@
 
 #define IDC_MAIN_INPUT	101
 #define IDC_MAIN_OUTPUT	102
+#define IDC_ALWAYSTOP_CHECKBOX 103
 #pragma comment( lib, "comctl32.lib") 
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
@@ -23,19 +24,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	
 	static HWND hOutput;
 	static HWND hInput;
+        static HWND hAlwaysTop;
 	char buffer[256];
 	char outputString[256];
 	char binaryOutput[256];
 	char binaryOutput2[256];
-	Evaluate eval;
+	Evaluate eval; 
 
 	switch(msg)
 	{
 	case WM_CREATE:
 		{
 			HFONT hfDefault;
-
-			hOutput = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", 
+                        
+                        hOutput = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", 
 				WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL, 
 				0, 0, 0, 0, hwnd, (HMENU)IDC_MAIN_OUTPUT, GetModuleHandle(NULL), NULL);
 			if(hOutput == NULL)
@@ -43,9 +45,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 			hInput = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", 
 				WS_CHILD | WS_VISIBLE, 
-				0, 0, 20, 30, hwnd, (HMENU)IDC_MAIN_INPUT, GetModuleHandle(NULL), NULL);
+				0, 0, 0, 0, hwnd, (HMENU)IDC_MAIN_INPUT, GetModuleHandle(NULL), NULL);
 			if(hOutput == NULL)
 				MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+                        
+                        hAlwaysTop = CreateWindowEx(NULL, "BUTTON", "Always on Top", 
+                                WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
+                                0, 0, 0, 0, 
+                                hwnd, (HMENU)IDC_ALWAYSTOP_CHECKBOX, GetModuleHandle(NULL), NULL);
+			if(hAlwaysTop == NULL)
+				MessageBox(hwnd, "Could not create check box.", "Error", MB_OK | MB_ICONERROR);
 
 			hfDefault=CreateFont(-17,0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,FF_DONTCARE,"Courier New");
 			//hfDefault=CreateFont(-17,0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,FF_DONTCARE,"Consolas");
@@ -58,10 +67,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_SIZE: 
 		{
+                    // x, y = 640, 480
+                    
 			RECT rcClient;
 			GetClientRect(hwnd, &rcClient);
-			SetWindowPos(hOutput, NULL, 10, 50, rcClient.right-20, rcClient.bottom-60, SWP_NOZORDER);
+			SetWindowPos(hOutput, NULL, 10, 50, rcClient.right-20, rcClient.bottom-100, SWP_NOZORDER);
 			SetWindowPos(hInput, NULL, 10, 10, rcClient.right-20, 30, SWP_NOZORDER);
+                        SetWindowPos(hAlwaysTop, NULL, rcClient.right-140, rcClient.bottom-40, 130, 30, SWP_NOZORDER);
 		}
 		break;
 	case WM_COMMAND:
@@ -88,7 +100,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					"\r\n"
 					"\r\n String  : %s", result, result, result, binaryOutput, binaryOutput2, (char *)strBuffer);
 				SetWindowText(hOutput, outputString);
-			}
+			
+                        }
+                        else if (HIWORD(wParam) == BN_CLICKED && LOWORD( wParam ) == IDC_ALWAYSTOP_CHECKBOX)
+                        {
+                            
+                            RECT rect;
+                            GetWindowRect(hwnd, &rect);
+                            
+                            LRESULT chk = SendMessage((HWND) lParam, BM_GETCHECK, 0, 0);
+ 
+                            SetWindowPos(hwnd,
+                                    chk == BST_CHECKED ? HWND_TOPMOST : HWND_NOTOPMOST,
+                                    rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top,
+                                    SWP_SHOWWINDOW);
+                        }
 		}
 		break;
 	case WM_CLOSE:
