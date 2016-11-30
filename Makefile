@@ -2,12 +2,12 @@ CC=g++
 LIBS=-lgdi32 -lcomctl32
 
 ifeq ($(DEBUG),yes)
-	CXXFLAGS=-Wall -W -g
-	LDFLAGS=-Wall -W -g
+	CXXFLAGS=-Wall -W -Os -g 
+	LDFLAGS=-Wall -W -s -g 
 	
 else
-	CXXFLAGS=-Wall -W
-	LDFLAGS=-Wall -W
+	CXXFLAGS=-Wall -W -Os 
+	LDFLAGS=-Wall -W -s
 endif
 
 INCPATH=.
