@@ -93,8 +93,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				int64_t strBuffer[2] = {};
 				*(strBuffer) = result;
 				sprintf(outputString,
-					"Result:"
-					"\r\n"
 					"\r\n Signed  : %I64d"
 					"\r\n"
 					"\r\n Unsigned: %I64u"
