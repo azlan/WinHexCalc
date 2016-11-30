@@ -65,6 +65,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			//hfDefault = GetStockObject(DEFAULT_GUI_FONT);
 			SendMessage(hInput, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
 			SendMessage(hOutput, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
+			
+			// set default focus on text input control
+			SetFocus(hInput);
+			
 			break;
 		}
 		case WM_SIZE:
