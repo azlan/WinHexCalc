@@ -3,7 +3,7 @@
 
 int printToBinary(int val, char* buf)
 {
-        // won't overflow because max Integer length <= 10
+	// won't overflow because max Integer length <= 10
 	_itoa(val, buf, 2);
 	auto len = strlen(buf);
 	char temp[37] = { 0 };

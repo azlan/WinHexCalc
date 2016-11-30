@@ -34,7 +34,7 @@ OBJPATH:
 $(EXEC): $(OBJ)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-$(OBJPATH)/%.o: $(SRCPATH)/%.cpp $(INCPATH)/hexcalc.h $(INCPATH)/helper.h
+$(OBJPATH)/%.o: $(SRCPATH)/%.cpp $(INCPATH)/*.h
 	$(CC) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 .PHONY: clean cleanall
