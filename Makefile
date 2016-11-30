@@ -22,7 +22,7 @@ SRC=$(SRCPATH)/winmain.cpp \
 OBJ=$(OBJPATH)/winmain.o \
     $(OBJPATH)/hexcalc.o \
     $(OBJPATH)/test.o
-EXEC=$(BINPATH)/hexcalc
+EXEC=$(BINPATH)/hexcalc.exe
 
 INCLUDES=-I ./$(INCPATH)
 
