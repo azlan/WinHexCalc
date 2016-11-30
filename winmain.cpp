@@ -50,7 +50,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			if (hOutput == NULL)
 				MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 
-			hAlwaysTop = CreateWindowEx(NULL, "BUTTON", "Always on Top",
+			hAlwaysTop = CreateWindowEx(0, "BUTTON", "Always on Top",
 				WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
 				0, 0, 0, 0,
 				hwnd, (HMENU)IDC_ALWAYSTOP_CHECKBOX, GetModuleHandle(NULL), NULL);
