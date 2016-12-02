@@ -92,7 +92,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				printToBinary((result & 0xffffffff), binaryOutput2);
 				int64_t strBuffer[2] = {};
 				*(strBuffer) = result;
-				sprintf(outputString,
+				snprintf(outputString, sizeof(outputString),
 					"\r\n Signed  : %I64d"
 					"\r\n"
 					"\r\n Unsigned: %I64u"
